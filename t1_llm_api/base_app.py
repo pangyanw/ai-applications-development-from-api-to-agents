@@ -21,4 +21,8 @@ async def start(stream: bool, client: AIClient) -> None:
                       If False, use synchronous responses (complete response at once).
         client (AIClient): The AI client instance to use for generating responses.
     """
-    raise NotImplementedError
+    while True:
+        user_input = input("You: ")
+
+        if user_input.lower() == "quit":
+            break
