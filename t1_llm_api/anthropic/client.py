@@ -17,6 +17,8 @@ class AnthropicAIClient(AIClient):
         _async_client (AsyncAnthropic): Asynchronous Anthropic client instance.
         Inherits all other attributes from AIClient.
     """
+    _client: Anthropic
+    _async_client: AsyncAnthropic
 
     def __init__(self, endpoint: str, model_name: str, api_key: str, system_prompt: str):
         """
@@ -35,7 +37,10 @@ class AnthropicAIClient(AIClient):
         # Useful links with request/response samples:
         #   - https://docs.anthropic.com/en/api/overview
         #   - https://docs.anthropic.com/en/api/messages
-        raise NotImplementedError
+        super.__init__
+
+
+        # raise NotImplementedError
 
     def response(self, messages: list[Message], **kwargs) -> Message:
         """
@@ -58,7 +63,8 @@ class AnthropicAIClient(AIClient):
         # - Call client
         # - Print response to console
         # - Return ASSISTANT message
-        raise NotImplementedError
+        pass
+        # raise NotImplementedError
 
     async def stream_response(self, messages: list[Message], **kwargs) -> Message:
         """
@@ -84,4 +90,5 @@ class AnthropicAIClient(AIClient):
         # - Handle stream with chunks
         # - Print response to console
         # - Return ASSISTANT message
-        raise NotImplementedError
+        pass
+        # raise NotImplementedError

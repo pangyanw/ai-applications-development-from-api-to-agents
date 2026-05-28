@@ -44,7 +44,8 @@ class CustomAnthropicAIClient(AIClient):
         # - Parse response
         # - Print response to console
         # - Return ASSISTANT message
-        raise NotImplementedError
+        pass
+        # raise NotImplementedError
 
     async def stream_response(self, messages: list[Message], **kwargs) -> Message:
         """
@@ -75,5 +76,6 @@ class CustomAnthropicAIClient(AIClient):
         # - Parse response
         # - Print chunks to console
         # - Return ASSISTANT message
-        raise NotImplementedError
+        pass
+        # raise NotImplementedError
 
