@@ -15,6 +15,27 @@ class CustomAnthropicAIClient(AIClient):
     the official SDK, demonstrating how to interact with Claude's API directly
     and handle its Server-Sent Events (SSE) streaming format.
     """
+    def __init__(self, endpoint: str, model_name: str, api_key: str, system_prompt: str):
+        """
+        Initialize the Anthropic client with SDK.
+
+        Args:
+            endpoint (str): The Anthropic API endpoint (for compatibility, not used by SDK).
+            model_name (str): The Claude model to use (e.g., 'claude-3-opus', 'claude-sonnet-4-5').
+            api_key (str): The Anthropic API key for authentication.
+            system_prompt (str): The system instruction to guide Claude's behavior.
+        """
+        #TODO:
+        # Call to __init__ of super class
+        # Add Anthropic and AsyncAnthropic clients https://github.com/anthropics/anthropic-sdk-python?tab=readme-ov-file#usage
+        # (In readme you can find samples with both of these clients)
+        # Useful links with request/response samples:
+        #   - https://docs.anthropic.com/en/api/overview
+        #   - https://docs.anthropic.com/en/api/messages
+        super.__init__
+
+
+        # raise NotImplementedError
 
     def response(self, messages: list[Message], **kwargs) -> Message:
         """
