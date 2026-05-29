@@ -103,12 +103,16 @@ class AnthropicAIClient(AIClient):
         # - Handle stream with chunks
         # - Print response to console
         # - Return ASSISTANT message
+        print("DNLM")
         system = self._system_prompt
-        response = self._async_client.messages.create(
+        response_message = ""
+        with self._client.messages.stream(
             model=self._model_name,
             max_tokens=1024,
-            messages=messages
-        )
-        print(response)
-        return response.content[0].text
+            messages=messages,
+        ) as stream:
+            for text in stream.text_stream:
+                print(text, end="", flush=True)
+                response_message += text
+        return response_message
         # raise NotImplementedError

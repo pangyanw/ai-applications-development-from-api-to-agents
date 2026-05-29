@@ -32,11 +32,11 @@ async def start(stream: bool, client: AIClient) -> None:
 
         # print(messages)
         if stream == True:
-            response_message = client.response(
+            response_message = await client.stream_response(
                 messages=messages
             )
         else:
-            response_message = client.stream_response(
+            response_message = client.response(
                 messages=messages
             )
 
