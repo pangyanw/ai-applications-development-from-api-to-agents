@@ -21,8 +21,25 @@ async def start(stream: bool, client: AIClient) -> None:
                       If False, use synchronous responses (complete response at once).
         client (AIClient): The AI client instance to use for generating responses.
     """
+    messages = []
     while True:
         user_input = input("You: ")
 
         if user_input.lower() == "quit":
             break
+
+        messages.append({"role": "user", "content": user_input})
+
+        # print(messages)
+        if stream == True:
+            response_message = client.response(
+                messages=messages
+            )
+        else:
+            response_message = client.stream_response(
+                messages=messages
+            )
+
+        print(f"Assistant: {response_message}")
+
+        messages.append({"role": "assistant", "content": response_message})

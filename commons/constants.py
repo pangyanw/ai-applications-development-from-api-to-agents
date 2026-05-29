@@ -20,7 +20,9 @@ OPENAI_EMBEDDINGS_ENDPOINT = f"{OPENAI_HOST}/v1/embeddings"
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
 
 # Anthropic API configuration
-ANTHROPIC_ENDPOINT = "https://api.anthropic.com/v1/messages"
+# ANTHROPIC_ENDPOINT = "https://api.anthropic.com/v1/messages"
+# Zhipu Compatible
+ANTHROPIC_ENDPOINT = "https://open.bigmodel.cn/api/anthropic"
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
 
 # Google Gemini API configuration

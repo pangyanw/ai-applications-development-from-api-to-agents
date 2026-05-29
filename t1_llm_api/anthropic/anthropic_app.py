@@ -7,13 +7,13 @@ from commons.constants import ANTHROPIC_ENDPOINT, ANTHROPIC_API_KEY, DEFAULT_SYS
 
 anthropic_client = AnthropicAIClient(
     endpoint=ANTHROPIC_ENDPOINT,
-    model_name='claude-sonnet-4-5',
+    model_name='glm-5.1',
     api_key=ANTHROPIC_API_KEY,
     system_prompt=DEFAULT_SYSTEM_PROMPT,
 )
 anthropic_custom_client = CustomAnthropicAIClient(
     endpoint=ANTHROPIC_ENDPOINT,
-    model_name='claude-sonnet-4-5',
+    model_name='glm-5.1',
     api_key=ANTHROPIC_API_KEY,
     system_prompt=DEFAULT_SYSTEM_PROMPT,
 )

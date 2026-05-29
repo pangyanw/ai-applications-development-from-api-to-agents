@@ -37,9 +37,15 @@ class AnthropicAIClient(AIClient):
         # Useful links with request/response samples:
         #   - https://docs.anthropic.com/en/api/overview
         #   - https://docs.anthropic.com/en/api/messages
-        super.__init__
-
-
+        super().__init__(endpoint, model_name, api_key, system_prompt)
+        self._client = Anthropic(
+            api_key=api_key,
+            base_url=endpoint,
+        )
+        self._async_client = AsyncAnthropic(
+            api_key=api_key,
+            base_url=endpoint,
+        )
         # raise NotImplementedError
 
     def response(self, messages: list[Message], **kwargs) -> Message:
@@ -63,7 +69,14 @@ class AnthropicAIClient(AIClient):
         # - Call client
         # - Print response to console
         # - Return ASSISTANT message
-        pass
+        system = self._system_prompt
+        response = self._client.messages.create(
+            model=self._model_name,
+            max_tokens=1024,
+            messages=messages
+        )
+        print(response)
+        return response.content[0].text
         # raise NotImplementedError
 
     async def stream_response(self, messages: list[Message], **kwargs) -> Message:
@@ -90,5 +103,12 @@ class AnthropicAIClient(AIClient):
         # - Handle stream with chunks
         # - Print response to console
         # - Return ASSISTANT message
-        pass
+        system = self._system_prompt
+        response = self._async_client.messages.create(
+            model=self._model_name,
+            max_tokens=1024,
+            messages=messages
+        )
+        print(response)
+        return response.content[0].text
         # raise NotImplementedError
