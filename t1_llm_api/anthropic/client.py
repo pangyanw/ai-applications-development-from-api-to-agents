@@ -107,7 +107,7 @@ class AnthropicAIClient(AIClient):
         # - Handle stream with chunks
         # - Print response to console
         # - Return ASSISTANT message
-        print("DNLM")
+        # print("DNLM")
         system = self._system_prompt
         response_message = ""
         with self._client.messages.stream(
@@ -118,5 +118,6 @@ class AnthropicAIClient(AIClient):
             for text in stream.text_stream:
                 print(text, end="", flush=True)
                 response_message += text
+            print()
         return response_message
         # raise NotImplementedError

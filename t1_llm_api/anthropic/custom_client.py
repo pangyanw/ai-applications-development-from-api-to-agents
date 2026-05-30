@@ -133,7 +133,7 @@ class CustomAnthropicAIClient(AIClient):
                 async for line in resp.content:
                     if line:
                         text = line.decode().strip()
-                        print(text)
+                        # print(text)
                         # Zhipu streaming responses are usually prefixed with "data: "
                         if text.startswith("data: "):
                             text = text[6:]
