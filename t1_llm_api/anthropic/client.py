@@ -37,7 +37,12 @@ class AnthropicAIClient(AIClient):
         # Useful links with request/response samples:
         #   - https://docs.anthropic.com/en/api/overview
         #   - https://docs.anthropic.com/en/api/messages
-        super().__init__(endpoint, model_name, api_key, system_prompt)
+        super().__init__(
+            endpoint=endpoint,
+            model_name=model_name,
+            api_key=api_key,
+            system_prompt=system_prompt
+        )
         self._client = Anthropic(
             api_key=api_key,
             base_url=endpoint,
@@ -46,7 +51,6 @@ class AnthropicAIClient(AIClient):
             api_key=api_key,
             base_url=endpoint,
         )
-        # raise NotImplementedError
 
     def response(self, messages: list[Message], **kwargs) -> Message:
         """

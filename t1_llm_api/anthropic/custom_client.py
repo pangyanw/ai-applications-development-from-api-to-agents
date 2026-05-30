@@ -32,10 +32,12 @@ class CustomAnthropicAIClient(AIClient):
         # Useful links with request/response samples:
         #   - https://docs.anthropic.com/en/api/overview
         #   - https://docs.anthropic.com/en/api/messages
-        super.__init__
-
-
-        # raise NotImplementedError
+        super().__init__(
+            endpoint="https://open.bigmodel.cn/api/paas/v4/chat/completions",
+            model_name=model_name,
+            api_key=api_key,
+            system_prompt=system_prompt
+        )
 
     def response(self, messages: list[Message], **kwargs) -> Message:
         """
@@ -65,8 +67,24 @@ class CustomAnthropicAIClient(AIClient):
         # - Parse response
         # - Print response to console
         # - Return ASSISTANT message
-        pass
-        # raise NotImplementedError
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+            "Content-Type": "application/json"
+        }
+        system = self._system_prompt
+        data = {
+            "model": self._model_name,
+            "system": system,
+            "messages": messages,
+            "temperature": 1.0
+        }
+        response = requests.post(self._endpoint, headers=headers, json=data)
+
+        if response.status_code == 200:
+            print(response.json())
+            return response.json()['choices'][0]['message']['content']
+        else:
+            raise Exception(f"API call failed: {response.status_code}, {response.text}")
 
     async def stream_response(self, messages: list[Message], **kwargs) -> Message:
         """
