@@ -115,6 +115,38 @@ class CustomAnthropicAIClient(AIClient):
         # - Parse response
         # - Print chunks to console
         # - Return ASSISTANT message
-        pass
-        # raise NotImplementedError
-
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+            "Content-Type": "application/json"
+        }
+        system = self._system_prompt
+        data = {
+            "model": self._model_name,
+            "system": system,
+            "messages": messages,
+            "temperature": 1.0,
+            "stream": True
+        }
+        response_message = ""
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self._endpoint, headers=headers, json=data) as resp:
+                async for line in resp.content:
+                    if line:
+                        text = line.decode().strip()
+                        print(text)
+                        # Zhipu streaming responses are usually prefixed with "data: "
+                        if text.startswith("data: "):
+                            text = text[6:]
+                        if text and text != "[DONE]":
+                            try:
+                                event = json.loads(text)
+                                # The content is in event['choices'][0]['delta']['content']
+                                delta = event.get('choices', [{}])[0].get('delta', {})
+                                content = delta.get('content')
+                                if content:
+                                    print(content, end='', flush=True)
+                                    response_message += content
+                            except Exception as e:
+                                print("Error parsing event:", e, text)
+                print()  # Newline after streaming is done
+        return response_message

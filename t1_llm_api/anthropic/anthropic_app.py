@@ -19,5 +19,5 @@ anthropic_custom_client = CustomAnthropicAIClient(
 )
 
 asyncio.run(
-    start(False, anthropic_custom_client)
+    start(True, anthropic_custom_client)
 )
