@@ -21,7 +21,14 @@ class OpenAIResponsesClient(AIClient):
             api_key=f"Bearer {api_key}",
             api_key_header_name="Authorization"
         )
-        self._client = OpenAI(api_key=api_key)
+        # responses_endpoint = OPENAI_RESPONSES_ENDPOINT.rstrip("/")
+        # sdk_base_url = (
+        #     responses_endpoint[:-len("/responses")]
+        #     if responses_endpoint.endswith("/responses")
+        #     else responses_endpoint
+        # )
+        sdk_base_url = "https://open.bigmodel.cn/api/paas/v4/"
+        self._client = OpenAI(api_key=api_key, base_url=sdk_base_url)
 
     def response(
             self,
@@ -44,13 +51,19 @@ class OpenAIResponsesClient(AIClient):
             }
             self._print_request(request_data, headers)
 
-        api_response = self._client.responses.create(
+        # api_response = self._client.responses.create(
+        #     model=self._model_name,
+        #     input=input_messages,
+        #     **kwargs
+        # )
+        api_response = self._client.chat.completions.create(
             model=self._model_name,
-            input=input_messages,
+            messages=input_messages,
             **kwargs
         )
 
-        content = api_response.output_text
+        # content = api_response.output_text
+        content = api_response.choices[0].message.content
         print("" + "=" * 50 + " RESPONSE " + "=" * 50)
         if print_only_content:
             print(content)

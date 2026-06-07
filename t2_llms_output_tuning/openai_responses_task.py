@@ -40,7 +40,8 @@ from t2_llms_output_tuning._main import run
 #  Try: reasoning={"effort": "high"} vs reasoning={"effort": "low"}
 
 run(
-    client=OpenAIResponsesClient('gpt-5.2'),
+    # client=OpenAIResponsesClient('gpt-5.2'),
+    client=OpenAIResponsesClient('glm-5.1'),
     print_request=True, # Switch to False if you do not want to see the request in console
     print_only_content=False, # Switch to True if you want to see only content from response
 
