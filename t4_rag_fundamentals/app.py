@@ -8,6 +8,9 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import SecretStr
 
+from langchain_community.chat_models import ChatZhipuAI
+from langchain_community.embeddings import ZhipuAIEmbeddings
+
 from commons.constants import OPENAI_API_KEY
 
 #TODO:
@@ -44,13 +47,21 @@ class MicrowaveRAG:
         Returns:
               VectorStore: Initialized FAISS vectorstore.
         """
-        #TODO:
-        # - Print a startup message
-        # - Check if 'microwave_faiss_index' folder already exists
-        # - If yes, load the index from disk using FAISS.load_local()
-        # - If no, call _create_new_index() to build and save a fresh index
-        # - Return the vectorstore
-        raise NotImplementedError
+        index_path = "microwave_faiss_index"
+        print("Initializing vectorstore...")
+
+        if os.path.isdir(index_path):
+            print(f"Loading existing FAISS index from: {index_path}")
+            vectorstore = FAISS.load_local(
+                index_path,
+                self.embeddings,
+                allow_dangerous_deserialization=True,
+            )
+        else:
+            print("No existing FAISS index found. Creating a new one...")
+            vectorstore = self._create_new_index()
+
+        return vectorstore
 
     def _create_new_index(self) -> VectorStore:
         """
@@ -58,14 +69,17 @@ class MicrowaveRAG:
         Returns:
               VectorStore: Newly created and saved FAISS vectorstore.
         """
-        #TODO:
-        # - Load 'microwave_manual.txt' using TextLoader
-        # - Split documents into chunks using RecursiveCharacterTextSplitter
-        #   (chunk_size=300, chunk_overlap=50, separators=["\n\n", "\n", "."])
-        # - Create a FAISS vectorstore from chunks and self.embeddings using FAISS.from_documents()
-        # - Save the index locally using vectorstore.save_local("microwave_faiss_index")
-        # - Return the vectorstore
-        raise NotImplementedError
+        docs = TextLoader("microwave_manual.txt").load()
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=300,
+            chunk_overlap=50,
+            separators=["\n\n", "\n", "."],
+        )
+        chunks = splitter.split_documents(docs)
+        vectorstore = FAISS.from_documents(chunks, self.embeddings)
+        vectorstore.save_local("microwave_faiss_index")
+
+        return vectorstore
 
     def retrieve_context(self, query: str, k: int = 4, score=0.3):
         """
