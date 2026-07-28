@@ -89,11 +89,19 @@ class MicrowaveRAG:
               k (int): The number of relevant documents(chunks) to retrieve.
               score (float): The similarity score between documents and query. Range 0.0 to 1.0.
         """
-        #TODO:
-        # - Search the vectorstore using similarity_search_with_relevance_scores() with k and score_threshold parameters
-        # - Iterate over results, collect each doc's page_content, and print its relevance score
-        # - Return all collected chunks joined with "\n\n" as a single context string
-        raise NotImplementedError
+        print("Retrieving context...")
+        results = self.vectorstore.similarity_search_with_relevance_scores(
+            query,
+            k=k,
+            score_threshold=score,
+        )
+
+        context_parts = []
+        for doc, relevance_score in results:
+            context_parts.append(doc.page_content)
+            print(f"Retrieved (Score: {relevance_score:.3f}): {doc.page_content}")
+
+        return "\n\n".join(context_parts)
 
     def augment_prompt(self, query: str, context: str):
         """
