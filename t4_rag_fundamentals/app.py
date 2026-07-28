@@ -23,7 +23,21 @@ from commons.constants import OPENAI_API_KEY
 #   - Model must use only information from conversation
 #   - Strictly forbid to answer questions that are not in the conversation or not present in `RAG CONTEXT`
 _SYSTEM_PROMPT = """
-NEED_TO_IMPLEMENT
+You are a microwave manual assistant.
+
+You will receive a user message with exactly two sections:
+1) ##RAG CONTEXT:
+   Retrieved passages from the microwave manual.
+2) ##USER QUESTION:
+   The user question.
+
+Rules:
+- Use only facts that appear in the provided RAG CONTEXT.
+- Do not use outside knowledge, assumptions, or speculation.
+- If the answer is not explicitly supported by RAG CONTEXT, reply:
+  "I cannot answer this from the provided context."
+- Do not answer questions unrelated to the provided context.
+- Keep the answer concise and directly relevant to USER QUESTION.
 """
 
 _USER_PROMPT = """##RAG CONTEXT:
@@ -112,11 +126,12 @@ class MicrowaveRAG:
         Returns:
               str: Formatted prompt ready for the LLM.
         """
-        #TODO:
         # - Format _USER_PROMPT template substituting {context} and {query}
         # - Print the resulting augmented prompt
         # - Return the formatted string
-        raise NotImplementedError
+        augmented_prompt = _USER_PROMPT.format(context=context, query=query)
+        print(f"Augmented prompt:\n{augmented_prompt}")
+        return augmented_prompt
 
     def generate_answer(self, augmented_prompt: str):
         """
@@ -131,22 +146,52 @@ class MicrowaveRAG:
         # - Invoke self.llm_client with the messages list
         # - Print the response content
         # - Return the response content string
-        raise NotImplementedError
-
+        messages = [
+            SystemMessage(content=_SYSTEM_PROMPT),
+            HumanMessage(content=augmented_prompt),
+        ]
+        response = self.llm_client.invoke(messages)
+        print(f"LLM response: {response.content}")
+        return response.content
 
 def main(rag: MicrowaveRAG):
-    #TODO:
     # - Print a welcome message
     # - Run an infinite loop that reads user input with input()
     # - For each question execute the 3-step RAG pipeline:
     #   - Step 1 (Retrieval):   call rag.retrieve_context() to fetch relevant chunks
     #   - Step 2 (Augmentation): call rag.augment_prompt() to build the prompt
     #   - Step 3 (Generation):  call rag.generate_answer() to get the LLM answer
-    raise NotImplementedError
+    print("Welcome to Microwave RAG assistant! Press Ctrl+C to exit.")
 
+    while True:
+        try:
+            query = input("\nAsk a question: ").strip()
+        except KeyboardInterrupt:
+            print("\nGoodbye!")
+            break
 
-#TODO:
+        if not query:
+            print("Please enter a question.")
+            continue
+
+        context = rag.retrieve_context(query)
+        augmented_prompt = rag.augment_prompt(query, context)
+        answer = rag.generate_answer(augmented_prompt)
+        print(f"Answer: {answer}")
+
 # Start the application by calling main() and passing a MicrowaveRAG instance:
 # - Create OpenAIEmbeddings with model='text-embedding-3-small' and api_key=OPENAI_API_KEY
 # - Create ChatOpenAI with temperature=0.0, model='gpt-5.2' and api_key=OPENAI_API_KEY
 # - Wrap both in a MicrowaveRAG instance and pass it to main()
+if __name__ == "__main__":
+    embeddings = OpenAIEmbeddings(
+        model="text-embedding-3-small",
+        api_key=SecretStr(OPENAI_API_KEY),
+    )
+    llm_client = ChatOpenAI(
+        temperature=0.0,
+        model="gpt-5.2",
+        api_key=SecretStr(OPENAI_API_KEY),
+    )
+    rag = MicrowaveRAG(embeddings=embeddings, llm_client=llm_client)
+    main(rag)
