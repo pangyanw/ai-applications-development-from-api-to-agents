@@ -11,7 +11,7 @@ from pydantic import SecretStr
 from langchain_community.chat_models import ChatZhipuAI
 from langchain_community.embeddings import ZhipuAIEmbeddings
 
-from commons.constants import OPENAI_API_KEY
+from commons.constants import ZHIPUAI_API_KEY, ZHIPUAI_OPENAI_API_BASE_URL
 
 #TODO:
 # Create system prompt with:
@@ -50,7 +50,7 @@ _USER_PROMPT = """##RAG CONTEXT:
 
 class MicrowaveRAG:
 
-    def __init__(self, embeddings: OpenAIEmbeddings, llm_client: ChatOpenAI):
+    def __init__(self, embeddings: ZhipuAIEmbeddings, llm_client: ChatZhipuAI):
         self.llm_client = llm_client
         self.embeddings = embeddings
         self.vectorstore = self._setup_vectorstore()
@@ -83,7 +83,7 @@ class MicrowaveRAG:
         Returns:
               VectorStore: Newly created and saved FAISS vectorstore.
         """
-        docs = TextLoader("microwave_manual.txt").load()
+        docs = TextLoader("t4_rag_fundamentals/microwave_manual.txt").load()
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=300,
             chunk_overlap=50,
@@ -180,18 +180,23 @@ def main(rag: MicrowaveRAG):
         print(f"Answer: {answer}")
 
 # Start the application by calling main() and passing a MicrowaveRAG instance:
-# - Create OpenAIEmbeddings with model='text-embedding-3-small' and api_key=OPENAI_API_KEY
-# - Create ChatOpenAI with temperature=0.0, model='gpt-5.2' and api_key=OPENAI_API_KEY
+# - Create ZhipuAIEmbeddings with model='embedding-2-small' and api_key=ZHIPUAI_API_KEY
+# - Create ChatZhipuAI with temperature=0.0, model='glm-4' and api_key=ZHIPUAI_API_KEY
 # - Wrap both in a MicrowaveRAG instance and pass it to main()
 if __name__ == "__main__":
     embeddings = OpenAIEmbeddings(
-        model="text-embedding-3-small",
-        api_key=SecretStr(OPENAI_API_KEY),
+        model="embedding-3",
+        api_key=SecretStr(ZHIPUAI_API_KEY),
+        openai_api_base=ZHIPUAI_OPENAI_API_BASE_URL,
+        check_embedding_ctx_length=False,
+        tiktoken_enabled=False,
+        chunk_size=64,
     )
     llm_client = ChatOpenAI(
         temperature=0.0,
-        model="gpt-5.2",
-        api_key=SecretStr(OPENAI_API_KEY),
+        model="glm-5.2",
+        api_key=SecretStr(ZHIPUAI_API_KEY),
+        openai_api_base=ZHIPUAI_OPENAI_API_BASE_URL,
     )
     rag = MicrowaveRAG(embeddings=embeddings, llm_client=llm_client)
     main(rag)

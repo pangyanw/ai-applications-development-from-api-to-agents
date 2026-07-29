@@ -29,5 +29,10 @@ ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
 GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models"
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 
+# Zhipu AI API configuration
+ZHIPUAI_ENDPOINT = "https://open.bigmodel.cn/api/paas/v3/model-api"
+ZHIPUAI_API_KEY = os.getenv('ZHIPUAI_API_KEY', '')
+ZHIPUAI_OPENAI_API_BASE_URL = "https://open.bigmodel.cn/api/paas/v4/"
+
 # User Service API configuration
 USER_SERVICE_ENDPOINT = "http://localhost:8041"
